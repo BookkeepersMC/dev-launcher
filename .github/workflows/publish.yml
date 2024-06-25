@@ -7,14 +7,14 @@ jobs:
       image: openjdk:16-jdk
       options: --user root
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           repository: 'BookkeepersMC/m2'
           path: './m2/'
           ref: 'master'
           token: ${{ secrets.GIT_PAT }}
-      - uses: gradle/wrapper-validation-action@v1
+      - uses: gradle/actions/wrapper-validation@v3
       - run: ./gradlew build publish --stacktrace
 
       - uses: EndBug/add-and-commit@v9.1.4

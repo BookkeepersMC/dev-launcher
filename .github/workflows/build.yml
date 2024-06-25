@@ -10,6 +10,6 @@ jobs:
       image: openjdk:${{ matrix.java }}
       options: --user root
     steps:
-      - uses: actions/checkout@v1
-      - uses: gradle/wrapper-action-validation@v1
+      - uses: actions/checkout@v4
+      - uses: gradle/actions/wrapper-validation@v3
       - run: ./gradlew build --stacktrace
