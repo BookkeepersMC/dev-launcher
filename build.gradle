@@ -53,3 +53,4 @@ publishing {
         }
     }
 }
+publish.mustRunAfter build
