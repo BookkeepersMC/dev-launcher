@@ -1,0 +1,25 @@
+name: Release
+on: [workflow_dispatch] # Manual trigger
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    container:
+      image: openjdk:16-jdk
+      options: --user root
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/checkout@v1
+        with:
+          repository: 'BookkeepersMC/m2'
+          path: './m2/'
+          ref: 'master'
+          token: ${{ secrets.GIT_PAT }}
+      - uses: gradle/wrapper-validation-action@v1
+      - run: ./gradlew build publish --stacktrace
+
+      - uses: EndBug/add-and-commit@v9.1.4
+        with:
+          add:  './com'
+          author_name: CrypticVerse
+          cwd: './m2/'
+          message: "Publish Dev Launcher"

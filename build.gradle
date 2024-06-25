@@ -7,12 +7,9 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-group = 'net.fabricmc'
-archivesBaseName = 'dev-launch-injector'
-version = '0.2.1'
-
-def ENV = System.getenv()
-version = version + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+group = 'com.bookkeepersmc'
+archivesBaseName = 'dev-launcher'
+version = '0.1.0'
 
 sourceSets {
     main {
@@ -21,30 +18,38 @@ sourceSets {
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 checkstyle {
-	configFile = file("checkstyle.xml")
-	toolVersion = '8.25'
+    configFile = file("checkstyle.xml")
+    toolVersion = '8.25'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.release.set(8)
+    } else {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifact(jar)
-		}
-	}
+    publications {
+        create("mavenJava", MavenPublication) {
+            from components.java
+        }
+    }
 
-	repositories {
-		if (project.hasProperty('mavenPass')) {
-			maven {
-				url = "http://mavenupload.modmuss50.me/"
-				credentials {
-					username = "buildslave"
-					password = project.getProperty('mavenPass')
-				}
-			}
-		}
-	}
+    repositories {
+        maven {
+            url = "file://${project.rootDir}/m2/"
+        }
+    }
 }
